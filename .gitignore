@@ -83,3 +83,6 @@ _build
 
 # FVM
 .fvm/
+
+# env
+.env.dart

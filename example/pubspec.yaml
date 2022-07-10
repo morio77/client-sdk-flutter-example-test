@@ -23,6 +23,7 @@ dependencies:
 
   livekit_client:
     path: ../
+  http: ^0.13.4
     # git:
     #   url: https://github.com/livekit/client-sdk-flutter
     #   ref: main

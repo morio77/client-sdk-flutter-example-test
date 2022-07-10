@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:livekit_client/livekit_client.dart';
+import 'package:livekit_example/token_server_gateway.dart';
 import 'package:livekit_example/widgets/text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -163,9 +164,16 @@ class _ConnectPageState extends State<ConnectPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 25),
-                    child: LKTextField(
-                      label: 'Token',
-                      ctrl: _tokenCtrl,
+                    // child: LKTextField(
+                    //   label: 'Token',
+                    //   ctrl: _tokenCtrl,
+                    // ),
+                    child: ElevatedButton(
+                      child: const Text('token取得'),
+                      onPressed: () async {
+                        final token = TokenServerGateway.generateToken(
+                            'roomName', 'userName');
+                      },
                     ),
                   ),
                   Padding(
