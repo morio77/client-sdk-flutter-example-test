@@ -20,6 +20,7 @@ class ConnectPage extends StatefulWidget {
 
 class _ConnectPageState extends State<ConnectPage> {
   final _userNameCtrl = TextEditingController();
+  static const _roomNameList = ['room1', 'room2', 'room3'];
   String _roomName = 'room1';
   bool _simulcast = true;
   bool _adaptiveStream = true;
@@ -113,6 +114,7 @@ class _ConnectPageState extends State<ConnectPage> {
                     'images/logo-dark.svg',
                   ),
                 ),
+                // ユーザ名入力部分
                 Padding(
                   padding: const EdgeInsets.only(bottom: 25),
                   child: LKTextField(
@@ -120,45 +122,41 @@ class _ConnectPageState extends State<ConnectPage> {
                     ctrl: _userNameCtrl,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Simulcast'),
-                      Switch(
-                        value: _simulcast,
-                        onChanged: (value) => _setSimulcast(value),
-                      ),
-                    ],
-                  ),
+
+                // ルーム選択ボタン
+                DropdownButton<String>(
+                  value: _roomName,
+                  onChanged: (String? value) {
+                    setState(() {
+                      if (value != null) _roomName = value;
+                    });
+                  },
+                  items: _roomNameList
+                      .map<DropdownMenuItem<String>>((String roomName) {
+                    return DropdownMenuItem(
+                      value: roomName,
+                      child: Text(roomName),
+                    );
+                  }).toList(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Adaptive Stream'),
-                      Switch(
-                        value: _adaptiveStream,
-                        onChanged: (value) => _setAdaptiveStream(value),
-                      ),
-                    ],
-                  ),
+
+                // 接続オプション変更部分
+                switchBooleanItemTile(
+                  text: 'Simulcast',
+                  value: _simulcast,
+                  onChanged: _setSimulcast,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Dynacast'),
-                      Switch(
-                        value: _dynacast,
-                        onChanged: (value) => _setDynacast(value),
-                      ),
-                    ],
-                  ),
+                switchBooleanItemTile(
+                  text: 'Adaptive Stream',
+                  value: _adaptiveStream,
+                  onChanged: _setAdaptiveStream,
                 ),
+                switchBooleanItemTile(
+                  text: 'Dynacast',
+                  value: _dynacast,
+                  onChanged: _setDynacast,
+                ),
+
                 // 接続ボタン
                 ElevatedButton(
                   onPressed: _busy
@@ -196,6 +194,26 @@ class _ConnectPageState extends State<ConnectPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Padding switchBooleanItemTile({
+    required String text,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(text),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ],
       ),
     );
   }
