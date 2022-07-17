@@ -3,7 +3,11 @@ marp: true
 theme: default
 
 ---
+
+![bg right:33% width:650](./res/undraw_Online_world_re_h4cb.png)
+
 # Flutter ✕ Livekit でオンライン会議アプリを作る
+
 
 ---
 # アジェンダ
