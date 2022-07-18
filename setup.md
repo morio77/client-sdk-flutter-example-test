@@ -1,6 +1,7 @@
 ---
 marp: true
 theme: default
+paginate: true
 
 ---
 
@@ -14,18 +15,21 @@ theme: default
   - 自己紹介
   - 開発環境
   - 今回作るもの
-  - 
+  - 手順解説
 
 
 ---
 # 自己紹介
-  - C#でWindowsアプリケーションを作っているサラリーマン
+  - C#でWindowsアプリケーションを作っている田舎のサラリーマン
 
 ---
 # 開発環境など
   - MacOS：12.2.1
   - Flutter：Version 3.0.1
-  - Ubuntu22.04 LTS (さくらのVPS様)
+  - Ubuntu22.04 LTS (さくらのVPS)
+
+---
+# 今回つくるもの
 
 ---
 # 大まかな手順
@@ -45,6 +49,9 @@ theme: default
 
 ---
 # サーバの構築1-1(Livekitサーバ)
+  - 作業ディレクトリに移動しておく
+    - `sudo mkdir /srv/livekit`
+    - `cd /srv/livekit`
   - dockerを使えるようにする
     - `sudo apt-get update`
     - `sudo apt-get upgrade`
@@ -196,7 +203,25 @@ sudo node app.js
 ```
 完了。
 
-必要に応じてバックグラウンド実行や、サービス化をしておくと良いでしょう。
+必要に応じてバックグラウンド実行や、サービス化をしておくと良い。
+
 
 ---
 # クライアントの作成(Flutter)
+
+公式Exampleをカスタマイズする
+
+| 変更前                                                                 | 変更後                                                                 |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| ![height:400](./res/%E5%A4%89%E6%9B%B4%E5%89%8D%E7%94%BB%E9%9D%A2.png) | ![height:400](./res/%E5%A4%89%E6%9B%B4%E5%BE%8C%E7%94%BB%E9%9D%A2.png) |
+
+---
+# クライアントの作成(Flutter)
+
+* 公式リポジトリをfork：[fork後のリポジトリ](https://github.com/morio77/client-sdk-flutter-example-test)
+* `Example`を改造していく：[改造後ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/main/example/lib)
+  - Token取得クラス
+  - ユーザ名入力域
+  - ルーム選択ボタン
+  - 接続ボタン
+    - ルームに接続する
