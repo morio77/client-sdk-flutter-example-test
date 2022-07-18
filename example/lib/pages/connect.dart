@@ -22,9 +22,16 @@ class _ConnectPageState extends State<ConnectPage> {
   final _userNameCtrl = TextEditingController();
   static const _roomNameList = ['room1', 'room2', 'room3'];
   String _roomName = 'room1';
+
+  // 接続オプション
+  // https://blog.livekit.io/an-introduction-to-webrtc-simulcast-6c5f1f6402eb/
   bool _simulcast = true;
+  // https://pub.dev/documentation/livekit_client/latest/livekit_client/RoomOptions/adaptiveStream.html
   bool _adaptiveStream = true;
+  // https://pub.dev/documentation/livekit_client/latest/livekit_client/RoomOptions/dynacast.html
   bool _dynacast = true;
+
+  // 接続中は接続ボタンを無効にするためのフラグ
   bool _busy = false;
 
   @override
@@ -41,10 +48,6 @@ class _ConnectPageState extends State<ConnectPage> {
   /// ルームに接続する
   Future<void> _connect(BuildContext ctx, String token) async {
     try {
-      setState(() {
-        _busy = true;
-      });
-
       final room = await LiveKitClient.connect(
         'http://${Env.livekitServerUrl}',
         token,
@@ -99,10 +102,7 @@ class _ConnectPageState extends State<ConnectPage> {
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             constraints: const BoxConstraints(maxWidth: 400),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -110,17 +110,12 @@ class _ConnectPageState extends State<ConnectPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 70),
-                  child: SvgPicture.asset(
-                    'images/logo-dark.svg',
-                  ),
+                  child: SvgPicture.asset('images/logo-dark.svg'),
                 ),
                 // ユーザ名入力部分
                 Padding(
                   padding: const EdgeInsets.only(bottom: 25),
-                  child: LKTextField(
-                    label: 'ユーザ名',
-                    ctrl: _userNameCtrl,
-                  ),
+                  child: LKTextField(label: 'ユーザ名', ctrl: _userNameCtrl),
                 ),
 
                 // ルーム選択ボタン
@@ -162,6 +157,10 @@ class _ConnectPageState extends State<ConnectPage> {
                   onPressed: _busy
                       ? null
                       : () async {
+                          setState(() {
+                            _busy = true;
+                          });
+
                           // トークン取得
                           final token = await TokenServerGateway.generateToken(
                             _roomName,
