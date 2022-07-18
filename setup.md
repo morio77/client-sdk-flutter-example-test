@@ -26,10 +26,25 @@ paginate: true
 # 開発環境など
   - MacOS：12.2.1
   - Flutter：Version 3.0.1
-  - Ubuntu22.04 LTS (さくらのVPS)
+  - Ubuntu Server 22.04 LTS
 
 ---
 # 今回つくるもの
+
+![bg right:40% height:600](./res/アプリイメージ.png)
+
+
+---
+# ライブラリ紹介
+
+https://pub.dev/packages/livekit_client
+
+![height:450](./res/livekit_client_スクリーンショット.png)
+
+---
+# 全体設計(シーケンス)
+
+![width:750](./res/%E5%85%A8%E4%BD%93%E3%82%B7%E3%83%BC%E3%82%B1%E3%83%B3%E3%82%B9%E5%9B%B3.png)
 
 ---
 # 大まかな手順
@@ -55,11 +70,11 @@ paginate: true
   - dockerを使えるようにする
     - `sudo apt-get update`
     - `sudo apt-get upgrade`
-    - `sudo apt-get install docker docker-compose`
+    - `sudo apt-get install docker`
   
 ---
 # サーバの構築1-2(Livekitサーバ) 
-- LivekitのConfigファイルを生成する
+- LivekitのConfigファイルを生成する(ディレクトリは`/srv/livekit`で実行)
     - `sudo docker run --rm -v$PWD:/output livekit/generate --local`
 ```bash
 Unable to find image 'livekit/generate:latest' locally
@@ -88,7 +103,7 @@ Here's a test token generated with your keys: ZZZ
 
 ---
 # サーバの構築1-3(Livekitサーバ) 
-  - Livekitサーバを建てる
+  - Livekitサーバを建てる(ディレクトリは`/srv/livekit`で実行)
 ```bash
 sudo docker run -d --rm -p 7880:7880 \
     -p 7881:7881 \
@@ -99,7 +114,7 @@ sudo docker run -d --rm -p 7880:7880 \
     --node-ip <machine-ip>
 ```
 
-※<machine-ip>はローカルで試す場合は`127.0.0.1`など。VPSで試す場合はグローバルIPアドレスを指定する。ドメインを使ってもいい(これが普通)。
+※<machine-ip>はローカルで試す場合は`127.0.0.1`など。VPSで試す場合はグローバルIPアドレスを指定する。
 
 ---
 # サーバの構築2(Token処理サーバ)の流れ
@@ -164,7 +179,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const livekitApi = require('livekit-server-sdk');
 const AccessToken = livekitApi.AccessToken;
-const RoomServiceClient = livekitApi.RoomServiceClient;
 
 // Constants
 const PORT = 3000;
@@ -224,4 +238,4 @@ sudo node app.js
   - ユーザ名入力域
   - ルーム選択ボタン
   - 接続ボタン
-    - ルームに接続する
+    - ルームに接続する(サンプルの`RoomPage`クラスをそのまま使う)
