@@ -230,12 +230,178 @@ sudo node app.js
 | ![height:400](./res/%E5%A4%89%E6%9B%B4%E5%89%8D%E7%94%BB%E9%9D%A2.png) | ![height:400](./res/%E5%A4%89%E6%9B%B4%E5%BE%8C%E7%94%BB%E9%9D%A2.png) |
 
 ---
-# クライアントの作成(Flutter)
+# クライアントの作成(Flutter)の流れ
 
 * 公式リポジトリをfork：[fork後のリポジトリ](https://github.com/morio77/client-sdk-flutter-example-test)
 * `Example`を改造していく：[改造後ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/main/example/lib)
-  - Token取得クラス
-  - ユーザ名入力域
-  - ルーム選択ボタン
-  - 接続ボタン
+  - Token取得クラス：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/token_server_gateway.dart#L8)
+  - ユーザ名入力域：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L118)
+  - ルーム選択ボタン：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L122)
+  - 接続ボタン：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L159)
     - ルームに接続する(サンプルの`RoomPage`クラスをそのまま使う)
+
+---
+# クライアントの作成1(Flutter)
+
+Token取得クラスを作成：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/token_server_gateway.dart#L8)
+
+```dart
+/// トークンサーバとの通信クラス
+class TokenServerGateway {
+  static Future<String> generateToken(
+    String roomName,
+    String userName,
+  ) async {
+    // パラメタ準備
+    final url = Uri.http(Env.tokenServerUrl, '/token');
+    final headers = {'content-type': 'application/json'};
+    final body = json.encode({
+      'roomName': roomName,
+      'userName': userName,
+    });
+
+    // リクエスト
+    final res = await http.post(url, headers: headers, body: body);
+    if (res.statusCode == 200) {
+      final token = res.body;
+      return token;
+    } else {
+      print('Request failed with status: ${res.statusCode}.');
+      return '';
+    }
+  }
+}
+```
+
+---
+# クライアントの作成2(Flutter)
+
+接続画面にて、ユーザ名を入力できるようにする：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L118)
+
+```dart
+
+final _userNameCtrl = TextEditingController();
+
+~~中略~~
+
+// ユーザ名入力部分
+Padding(
+  padding: const EdgeInsets.only(bottom: 25),
+  child: LKTextField(label: 'ユーザ名', ctrl: _userNameCtrl),
+),
+```
+
+---
+# クライアントの作成3(Flutter)
+
+ルーム選択ボタンを作成する：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L122)
+
+```dart
+static const _roomNameList = ['room1', 'room2', 'room3'];
+String _roomName = 'room1';
+
+中略
+
+// ルーム選択ボタン
+DropdownButton<String>(
+  value: _roomName,
+  onChanged: (String? value) {
+    setState(() {
+      if (value != null) _roomName = value;
+    });
+  },
+  items: _roomNameList
+      .map<DropdownMenuItem<String>>((String roomName) {
+    return DropdownMenuItem(
+      value: roomName,
+      child: Text(roomName),
+    );
+  }).toList(),
+),
+```
+
+---
+# クライアントの作成4a(Flutter)
+
+ルームに接続するために。
+前提として
+* サンプルの`RoomPage`をそのまま使う。
+* `RoomPage`には`Room`クラスを渡してあげる必要がある
+
+```dart
+class RoomPage extends StatefulWidget {
+  //
+  final Room room;
+
+  const RoomPage(
+    this.room, {
+    Key? key,
+  }) : super(key: key);
+```
+
+---
+# クライアントの作成4b(Flutter)
+
+接続ボタンを押したときに以下を実施する。
+
+* トークンを生成する(前述の`TokenServerGateway`を使う)
+* `LiveKitClient`(ライブラリ)を使って`Room`クラスのインスタンスを作る
+* `RoomPage`に遷移する
+
+---
+# クライアントの作成4c(Flutter)
+
+トークンを生成する(前述の`TokenServerGateway`を使う)：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L165)
+
+```dart
+final _userNameCtrl = TextEditingController();
+String _roomName = 'room1';
+
+中略
+
+// トークン取得
+final token = await TokenServerGateway.generateToken(
+  _roomName,
+  _userNameCtrl.text,
+);
+```
+
+---
+# クライアントの作成4d(Flutter)
+
+`LiveKitClient`(ライブラリ)を使って`Room`クラスのインスタンスを作る：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L51)
+
+```dart
+final room = await LiveKitClient.connect(
+  'http://${Env.livekitServerUrl}',
+  token,
+  roomOptions: RoomOptions(
+    adaptiveStream: _adaptiveStream,
+    dynacast: _dynacast,
+    defaultVideoPublishOptions: VideoPublishOptions(
+      simulcast: _simulcast,
+    ),
+  ),
+);
+```
+
+---
+# クライアントの作成4e(Flutter)
+
+`RoomPage`に遷移する：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L63)
+
+```dart
+await Navigator.push<void>(
+  context,
+  MaterialPageRoute(builder: (_) => RoomPage(room)),
+);
+```
+
+---
+# クライアントの作成5(Flutter)
+
+接続画面のカスタマイズ
+
+解説は省略しますが、以下のようなことができます。
+
+* 
