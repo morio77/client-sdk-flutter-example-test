@@ -237,7 +237,7 @@ sudo node app.js
   - Token取得クラス：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/token_server_gateway.dart#L8)
   - ユーザ名入力域：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L118)
   - ルーム選択ボタン：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/blob/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L122)
-  - 接続ボタン：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L159)
+  - 接続ボタン：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L159)
     - ルームに接続する(サンプルの`RoomPage`クラスをそのまま使う)
 
 ---
@@ -351,7 +351,7 @@ class RoomPage extends StatefulWidget {
 ---
 # クライアントの作成4c(Flutter)
 
-トークンを生成する(前述の`TokenServerGateway`を使う)：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L165)
+トークンを生成する(前述の`TokenServerGateway`を使う)：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L165)
 
 ```dart
 final _userNameCtrl = TextEditingController();
@@ -369,7 +369,7 @@ final token = await TokenServerGateway.generateToken(
 ---
 # クライアントの作成4d(Flutter)
 
-`LiveKitClient`(ライブラリ)を使って`Room`クラスのインスタンスを作る：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L51)
+`LiveKitClient`(ライブラリ)を使って`Room`クラスのインスタンスを作る：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L51)
 
 ```dart
 final room = await LiveKitClient.connect(
@@ -388,7 +388,7 @@ final room = await LiveKitClient.connect(
 ---
 # クライアントの作成4e(Flutter)
 
-`RoomPage`に遷移する：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages#L63)
+`RoomPage`に遷移する：[ソース](https://github.com/morio77/client-sdk-flutter-example-test/tree/d78c04976379e76392e1270a7b4799bef7826971/example/lib/pages/connect.dart#L63)
 
 ```dart
 await Navigator.push<void>(
